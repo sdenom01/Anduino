@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Anduino</string>
+    <string name="On">On</string>
+    <string name="Off">Off</string>
+    <string name="Visible">Visible</string>
+    <string name="List">List</string>
+    <string name="ToggleBluetooth">Show Bluetooth Info?</string>
+</resources>

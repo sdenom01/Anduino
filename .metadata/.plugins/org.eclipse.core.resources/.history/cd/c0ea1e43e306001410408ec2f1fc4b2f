@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Anduino</string>
+    <string name="On">Hello world!</string>
+    <string name="Visible">Hello world!</string>
+    <string name="List">Hello world!</string>
+    <string name="Off">Hello world!</string>
+
+</resources>
