@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:background="#C2C2C2"
         android:orientation="vertical"
-        android:visibility="gone" >
+        android:visibility="visible" >
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -76,6 +76,24 @@
                 android:clickable="true"
                 android:onClick="list"
                 android:text="@string/List" />
+            
+            
+
+            <Button
+                android:id="@+id/button5"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="LED On" />
+
+            <Button
+                android:id="@+id/button6"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="LED Off" />
         </LinearLayout>
 
         <LinearLayout
