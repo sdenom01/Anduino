@@ -81,7 +81,6 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				toast("LED On");
 				sendData("1");
 			}
 
@@ -92,7 +91,6 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				toast("LED Off");
 				sendData("0");
 			}
 
