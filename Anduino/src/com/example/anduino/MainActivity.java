@@ -12,6 +12,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,11 +36,12 @@ import com.larswerkman.holocolorpicker.OpacityBar;
 import com.larswerkman.holocolorpicker.SVBar;
 import com.larswerkman.holocolorpicker.SaturationBar;
 import com.larswerkman.holocolorpicker.ValueBar;
+import com.larswerkman.holocolorpicker.ValueBar.OnValueChangedListener;
 
 public class MainActivity extends Activity {
 
 	@SuppressWarnings("unused")
-	private Button On, Off, Visible, list, onLED, offLED;
+	private Button On, Off, Visible, list, redOn, redOff, greenOn, greenOff, blueOn, blueOff;
 
 	private BluetoothAdapter btAdapter;
 	private Set<BluetoothDevice> pairedDevices;
@@ -57,6 +59,8 @@ public class MainActivity extends Activity {
 	private OpacityBar opacityBar;
 	private SaturationBar saturationBar;
 	private ValueBar valueBar;
+
+	private Boolean listToggle = false;
 
 	// SPP UUID service
 	private static final UUID MY_UUID = UUID
@@ -76,8 +80,8 @@ public class MainActivity extends Activity {
 		Visible = (Button) findViewById(R.id.button3);
 		list = (Button) findViewById(R.id.button4);
 
-		onLED = (Button) findViewById(R.id.button5);
-		onLED.setOnClickListener(new OnClickListener() {
+		redOn = (Button) findViewById(R.id.btRedOn);
+		redOn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -86,12 +90,52 @@ public class MainActivity extends Activity {
 
 		});
 
-		offLED = (Button) findViewById(R.id.button6);
-		offLED.setOnClickListener(new OnClickListener() {
+		redOff = (Button) findViewById(R.id.btRedOff);
+		redOff.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				sendData("0");
+			}
+
+		});
+		
+		greenOn = (Button) findViewById(R.id.btGreenOn);
+		greenOn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				sendData("2");
+			}
+
+		});
+
+		greenOff = (Button) findViewById(R.id.btGreenOff);
+		greenOff.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				sendData("3");
+			}
+
+		});
+		
+		blueOn = (Button) findViewById(R.id.btBlueOn);
+		blueOn.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				sendData("4");
+			}
+
+		});
+
+		blueOff = (Button) findViewById(R.id.btBlueOff);
+		blueOff.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				sendData("5");
 			}
 
 		});
@@ -136,7 +180,13 @@ public class MainActivity extends Activity {
 		picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
-
+				String hexColor = String.format("#%06X", (0xFFFFFF & color));
+				list.setBackgroundColor(Color.parseColor(hexColor));
+				
+				
+				//sendData(hexColor);
+				
+				sendToArduino(hexColor);
 			}
 		});
 
@@ -145,8 +195,18 @@ public class MainActivity extends Activity {
 
 		// adding onChangeListeners to bars
 		// opacitybar.setOnOpacityChangeListener(new OnOpacityChangeListener …)
-		// valuebar.setOnValueChangeListener(new OnValueChangeListener …)
+		valueBar.setOnValueChangedListener(new OnValueChangedListener() {
+
+			@Override
+			public void onValueChanged(int value) {
+				String hexColor = String.format("#%06X", (0xFFFFFF & value));
+				Log.d("", hexColor);
+				list.setBackgroundColor(Color.parseColor(hexColor));
+			}
+
+		});
 		// saturationBar.setOnSaturationChangeListener(new
+
 		// OnSaturationChangeListener …)
 	}
 
@@ -168,6 +228,16 @@ public class MainActivity extends Activity {
 		ArrayList<String> list = new ArrayList<String>();
 		for (BluetoothDevice bt : pairedDevices)
 			list.add(bt.getName());
+
+		listToggle = !listToggle;
+
+		if (listToggle) {
+			view.setBackgroundColor(Color.RED);
+			lv.setVisibility(View.VISIBLE);
+		} else {
+			view.setBackgroundColor(Color.parseColor("#C2C2C2"));
+			lv.setVisibility(View.INVISIBLE);
+		}
 
 		Toast.makeText(getApplicationContext(), "Showing Paired Devices",
 				Toast.LENGTH_SHORT).show();
@@ -285,30 +355,21 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	@Override
-	public void onPause() {
-		super.onPause();
 
-		Log.d(TAG, "...In onPause()...");
-
-		if (outStream != null) {
-			try {
-				outStream.flush();
-			} catch (IOException e) {
-				errorExit(
-						"Fatal Error",
-						"In onPause() and failed to flush output stream: "
-								+ e.getMessage() + ".");
-			}
-		}
-
-		try {
-			btSocket.close();
-		} catch (IOException e2) {
-			errorExit("Fatal Error", "In onPause() and failed to close socket."
-					+ e2.getMessage() + ".");
-		}
-	}
+	/*
+	 * @Override public void onPause() { super.onPause();
+	 * 
+	 * Log.d(TAG, "...In onPause()...");
+	 * 
+	 * if (outStream != null) { try { outStream.flush(); } catch (IOException e)
+	 * { errorExit( "Fatal Error",
+	 * "In onPause() and failed to flush output stream: " + e.getMessage() +
+	 * "."); } }
+	 * 
+	 * if (btSocket != null) try { btSocket.close(); } catch (IOException e2) {
+	 * errorExit( "Fatal Error", "In onPause() and failed to close socket." +
+	 * e2.getMessage() + "."); } }
+	 */
 
 	private void checkBTState() {
 		// Check for Bluetooth support and then check to make sure it is turned
@@ -358,6 +419,29 @@ public class MainActivity extends Activity {
 					+ " exists on server.\n\n";
 
 			errorExit("Fatal Error", msg);
+		}
+	}
+	
+	// sends color data to a Serial device as {R, G, B, 0x0A}
+	private void sendToArduino(String message){
+		byte[] msgBuffer = message.getBytes();
+		
+		//remove spurious line endings from color bytes so the serial device doesn't get confused
+		for (int i=0; i<msgBuffer.length-1; i++){
+			if (msgBuffer[i] == 0x0A){
+				msgBuffer[i] = 0x0B;
+			}
+		}
+		//send the color to the serial device
+		if (outStream != null){
+			try{
+				outStream.write(msgBuffer);
+			}
+			catch (IOException e){
+				Log.e(TAG, "couldn't write color bytes to serial device");
+			}
+		} else {
+			toast("No device connected.");
 		}
 	}
 }

@@ -85,18 +85,46 @@
             android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/btRedOn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:text="LED On" />
+                android:text="Red On" />
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/btRedOff"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:text="LED Off" />
+                android:text="Red Off" />
+            
+            <Button
+                android:id="@+id/btGreenOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="Green On" />
+
+            <Button
+                android:id="@+id/btGreenOff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="Green Off" />
+            
+            <Button
+                android:id="@+id/btBlueOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="Blue On" />
+
+            <Button
+                android:id="@+id/btBlueOff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:text="Blue Off" />
         </LinearLayout>
 
         <LinearLayout
