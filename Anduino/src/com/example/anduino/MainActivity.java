@@ -41,13 +41,6 @@ public class MainActivity extends Activity {
 	@SuppressWarnings("unused")
 	private Button On, Off, Visible, list, redOn, redOff, greenOn, greenOff,
 			blueOn, blueOff;
-
-	private BluetoothAdapter btAdapter;
-	private Set<BluetoothDevice> pairedDevices;
-
-	private BluetoothSocket btSocket = null;
-	private OutputStream outStream = null;
-
 	private ListView lv;
 	private TextView tvColorDisplay;
 
@@ -57,16 +50,20 @@ public class MainActivity extends Activity {
 	private ColorPicker picker;
 	private ValueBar valueBar;
 
+	private BluetoothAdapter btAdapter;
+	private BluetoothSocket btSocket = null;
+	private OutputStream outStream = null;
+	private Set<BluetoothDevice> pairedDevices;
+
 	private Boolean listToggle = false;
+
+	// MAC-address of Bluetooth module
+	private static String address;
+	private static String TAG = "Debug";
 
 	// SPP UUID service
 	private static final UUID MY_UUID = UUID
 			.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
-	// MAC-address of Bluetooth module
-	private static String address;
-
-	private static String TAG = "Debug";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -173,8 +170,8 @@ public class MainActivity extends Activity {
 		// To set the old selected color u can do it like this
 		picker.setOldCenterColor(picker.getColor());
 
-		// Happens every 'tick' the picker is being draggs, eventually I want to
-		// send each of these values
+		// Happens every 'tick' the picker is being dragged,
+		// eventually I want to send each of these values
 		picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
@@ -355,20 +352,33 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	/*
-	 * @Override public void onPause() { super.onPause();
-	 * 
-	 * Log.d(TAG, "...In onPause()...");
-	 * 
-	 * if (outStream != null) { try { outStream.flush(); } catch (IOException e)
-	 * { errorExit( "Fatal Error",
-	 * "In onPause() and failed to flush output stream: " + e.getMessage() +
-	 * "."); } }
-	 * 
-	 * if (btSocket != null) try { btSocket.close(); } catch (IOException e2) {
-	 * errorExit( "Fatal Error", "In onPause() and failed to close socket." +
-	 * e2.getMessage() + "."); } }
-	 */
+	@Override
+	public void onPause() {
+		super.onPause();
+
+		Log.d(TAG, "...In onPause()...");
+
+		if (outStream != null) {
+			try {
+				outStream.flush();
+			} catch (IOException e) {
+				errorExit(
+						"Fatal Error",
+						"In onPause() and failed to flush output stream: "
+								+ e.getMessage() + ".");
+			}
+		}
+
+		if (btSocket != null)
+			try {
+				btSocket.close();
+			} catch (IOException e2) {
+				errorExit(
+						"Fatal Error",
+						"In onPause() and failed to close socket."
+								+ e2.getMessage() + ".");
+			}
+	}
 
 	private void checkBTState() {
 		// Check for Bluetooth support and then check to make sure it is turned
@@ -417,7 +427,7 @@ public class MainActivity extends Activity {
 		}
 	}
 
-	// sends color data to a Serial device as {R, G, B, 0x0A}
+	// sends color data to a Serial device as #000000
 	private void sendToArduino(String message) {
 		byte[] msgBuffer = message.getBytes();
 
