@@ -32,16 +32,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
-import com.larswerkman.holocolorpicker.OpacityBar;
-import com.larswerkman.holocolorpicker.SVBar;
-import com.larswerkman.holocolorpicker.SaturationBar;
+import com.larswerkman.holocolorpicker.ColorPicker.OnColorSelectedListener;
 import com.larswerkman.holocolorpicker.ValueBar;
 import com.larswerkman.holocolorpicker.ValueBar.OnValueChangedListener;
 
 public class MainActivity extends Activity {
 
 	@SuppressWarnings("unused")
-	private Button On, Off, Visible, list, redOn, redOff, greenOn, greenOff, blueOn, blueOff;
+	private Button On, Off, Visible, list, redOn, redOff, greenOn, greenOff,
+			blueOn, blueOff;
 
 	private BluetoothAdapter btAdapter;
 	private Set<BluetoothDevice> pairedDevices;
@@ -50,14 +49,12 @@ public class MainActivity extends Activity {
 	private OutputStream outStream = null;
 
 	private ListView lv;
+	private TextView tvColorDisplay;
 
 	@SuppressWarnings("unused")
 	private LinearLayout llBluetooth, llColorWheel;
 	private Switch toggleBT;
 	private ColorPicker picker;
-	private SVBar svBar;
-	private OpacityBar opacityBar;
-	private SaturationBar saturationBar;
 	private ValueBar valueBar;
 
 	private Boolean listToggle = false;
@@ -80,6 +77,8 @@ public class MainActivity extends Activity {
 		Visible = (Button) findViewById(R.id.button3);
 		list = (Button) findViewById(R.id.button4);
 
+		tvColorDisplay = (TextView) findViewById(R.id.tvColorDisplay);
+
 		redOn = (Button) findViewById(R.id.btRedOn);
 		redOn.setOnClickListener(new OnClickListener() {
 
@@ -99,7 +98,7 @@ public class MainActivity extends Activity {
 			}
 
 		});
-		
+
 		greenOn = (Button) findViewById(R.id.btGreenOn);
 		greenOn.setOnClickListener(new OnClickListener() {
 
@@ -119,7 +118,7 @@ public class MainActivity extends Activity {
 			}
 
 		});
-		
+
 		blueOn = (Button) findViewById(R.id.btBlueOn);
 		blueOn.setOnClickListener(new OnClickListener() {
 
@@ -160,54 +159,55 @@ public class MainActivity extends Activity {
 		checkBTState();
 
 		picker = (ColorPicker) findViewById(R.id.picker);
-		svBar = (SVBar) findViewById(R.id.svbar);
-		opacityBar = (OpacityBar) findViewById(R.id.opacitybar);
-		saturationBar = (SaturationBar) findViewById(R.id.saturationbar);
+
 		valueBar = (ValueBar) findViewById(R.id.valuebar);
 
-		picker.addSVBar(svBar);
-		picker.addOpacityBar(opacityBar);
-		picker.addSaturationBar(saturationBar);
 		picker.addValueBar(valueBar);
 
 		// To get the color
 		picker.getColor();
 
+		tvColorDisplay.setText(String.format("#%06X",
+				(0xFFFFFF & picker.getColor())));
+
 		// To set the old selected color u can do it like this
 		picker.setOldCenterColor(picker.getColor());
-		// adds listener to the colorpicker which is implemented
-		// in the activity
+
+		// Happens every 'tick' the picker is being draggs, eventually I want to
+		// send each of these values
 		picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
 				String hexColor = String.format("#%06X", (0xFFFFFF & color));
-				list.setBackgroundColor(Color.parseColor(hexColor));
-				
-				
-				//sendData(hexColor);
-				
-				sendToArduino(hexColor);
+
+				tvColorDisplay.setText(hexColor);
+
 			}
 		});
 
-		// to turn of showing the old color
-		// picker.setShowOldCenterColor(false);
+		// Only time to send the hexcolor right now
+		// Eventually send OnColorChanged
+		picker.setOnColorSelectedListener(new OnColorSelectedListener() {
+			@Override
+			public void onColorSelected(int color) {
+				picker.setOldCenterColor(picker.getColor());
 
-		// adding onChangeListeners to bars
-		// opacitybar.setOnOpacityChangeListener(new OnOpacityChangeListener …)
+				String hexColor = String.format("#%06X", (0xFFFFFF & color));
+
+				sendToArduino(hexColor);
+			}
+
+		});
+
 		valueBar.setOnValueChangedListener(new OnValueChangedListener() {
 
 			@Override
 			public void onValueChanged(int value) {
-				String hexColor = String.format("#%06X", (0xFFFFFF & value));
-				Log.d("", hexColor);
-				list.setBackgroundColor(Color.parseColor(hexColor));
+				picker.setColor(value);
+				picker.setOldCenterColor(picker.getColor());
 			}
 
 		});
-		// saturationBar.setOnSaturationChangeListener(new
-
-		// OnSaturationChangeListener …)
 	}
 
 	public void on(View view) {
@@ -355,7 +355,6 @@ public class MainActivity extends Activity {
 		}
 	}
 
-
 	/*
 	 * @Override public void onPause() { super.onPause();
 	 * 
@@ -395,10 +394,6 @@ public class MainActivity extends Activity {
 		finish();
 	}
 
-	private void toast(String message) {
-		Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
-	}
-
 	private void sendData(String message) {
 		byte[] msgBuffer = message.getBytes();
 
@@ -421,27 +416,20 @@ public class MainActivity extends Activity {
 			errorExit("Fatal Error", msg);
 		}
 	}
-	
+
 	// sends color data to a Serial device as {R, G, B, 0x0A}
-	private void sendToArduino(String message){
+	private void sendToArduino(String message) {
 		byte[] msgBuffer = message.getBytes();
-		
-		//remove spurious line endings from color bytes so the serial device doesn't get confused
-		for (int i=0; i<msgBuffer.length-1; i++){
-			if (msgBuffer[i] == 0x0A){
-				msgBuffer[i] = 0x0B;
-			}
-		}
-		//send the color to the serial device
-		if (outStream != null){
-			try{
+
+		// send the color to the serial device
+		if (outStream != null) {
+			try {
 				outStream.write(msgBuffer);
-			}
-			catch (IOException e){
+			} catch (IOException e) {
 				Log.e(TAG, "couldn't write color bytes to serial device");
 			}
 		} else {
-			toast("No device connected.");
+			Log.d(TAG, "No device connected.");
 		}
 	}
 }

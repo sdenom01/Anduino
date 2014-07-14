@@ -81,55 +81,6 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/btRedOn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:text="Red On" />
-
-            <Button
-                android:id="@+id/btRedOff"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:text="Red Off" />
-            
-            <Button
-                android:id="@+id/btGreenOn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:text="Green On" />
-
-            <Button
-                android:id="@+id/btGreenOff"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:text="Green Off" />
-            
-            <Button
-                android:id="@+id/btBlueOn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:text="Blue On" />
-
-            <Button
-                android:id="@+id/btBlueOff"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:text="Blue Off" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <ListView
@@ -154,29 +105,84 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
 
-        <com.larswerkman.holocolorpicker.SVBar
-            android:id="@+id/svbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
-        <com.larswerkman.holocolorpicker.OpacityBar
-            android:id="@+id/opacitybar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
-        <com.larswerkman.holocolorpicker.SaturationBar
-            android:id="@+id/saturationbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-
         <com.larswerkman.holocolorpicker.ValueBar
             android:id="@+id/valuebar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center" />
+
+        <TextView
+            android:id="@+id/tvColorDisplay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal" >
+
+            <Button
+                android:id="@+id/btRedOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#ed8957"
+                android:clickable="true"
+                android:text="@string/On" />
+
+            <Button
+                android:id="@+id/btRedOff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="12dp"
+                android:layout_toRightOf="@id/btRedOn"
+                android:background="#ed8957"
+                android:clickable="true"
+                android:text="@string/Off" />
+
+            <Button
+                android:id="@+id/btGreenOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/btRedOff"
+                android:background="#9bbb59"
+                android:clickable="true"
+                android:text="@string/On" />
+
+            <Button
+                android:id="@+id/btGreenOff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="12dp"
+                android:layout_toRightOf="@id/btGreenOn"
+                android:background="#9bbb59"
+                android:clickable="true"
+                android:text="@string/Off" />
+
+            <Button
+                android:id="@+id/btBlueOn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/btGreenOff"
+                android:background="#7292cb"
+                android:clickable="true"
+                android:text="@string/On" />
+
+            <Button
+                android:id="@+id/btBlueOff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_toRightOf="@id/btBlueOn"
+                android:background="#7292cb"
+                android:clickable="true"
+                android:text="@string/Off" />
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>
