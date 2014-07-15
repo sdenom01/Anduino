@@ -169,9 +169,7 @@ public class MainActivity extends Activity {
 
 		// To set the old selected color u can do it like this
 		picker.setOldCenterColor(picker.getColor());
-
-		// Happens every 'tick' the picker is being dragged,
-		// eventually I want to send each of these values
+		
 		picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
@@ -183,8 +181,6 @@ public class MainActivity extends Activity {
 			}
 		});
 
-		// Only time to send the hexcolor right now
-		// Eventually send OnColorChanged
 		picker.setOnColorSelectedListener(new OnColorSelectedListener() {
 			@Override
 			public void onColorSelected(int color) {
