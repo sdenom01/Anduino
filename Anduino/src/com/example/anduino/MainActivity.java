@@ -179,6 +179,7 @@ public class MainActivity extends Activity {
 
 				tvColorDisplay.setText(hexColor);
 
+				sendToArduino(hexColor);
 			}
 		});
 
@@ -188,10 +189,6 @@ public class MainActivity extends Activity {
 			@Override
 			public void onColorSelected(int color) {
 				picker.setOldCenterColor(picker.getColor());
-
-				String hexColor = String.format("#%06X", (0xFFFFFF & color));
-
-				sendToArduino(hexColor);
 			}
 
 		});
@@ -435,8 +432,11 @@ public class MainActivity extends Activity {
 		if (outStream != null) {
 			try {
 				outStream.write(msgBuffer);
+				Thread.sleep(25); // Sleep is required for Arduino baud rate
 			} catch (IOException e) {
 				Log.e(TAG, "couldn't write color bytes to serial device");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		} else {
 			Log.d(TAG, "No device connected.");
