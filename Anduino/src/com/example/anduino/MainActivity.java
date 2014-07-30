@@ -3,6 +3,7 @@ package com.example.anduino;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class MainActivity extends Activity {
 	private Button On, Off, Visible, list, redOn, redOff, greenOn, greenOff,
 			blueOn, blueOff;
 	private ListView lv;
-	private TextView tvColorDisplay;
+	private TextView tvColorDisplay, tvChangeBackground;
 
 	@SuppressWarnings("unused")
 	private LinearLayout llBluetooth, llColorWheel;
@@ -75,6 +76,7 @@ public class MainActivity extends Activity {
 		list = (Button) findViewById(R.id.button4);
 
 		tvColorDisplay = (TextView) findViewById(R.id.tvColorDisplay);
+		tvChangeBackground = (TextView) findViewById(R.id.tvChangeBackground);
 
 		redOn = (Button) findViewById(R.id.btRedOn);
 		redOn.setOnClickListener(new OnClickListener() {
@@ -169,7 +171,7 @@ public class MainActivity extends Activity {
 
 		// To set the old selected color u can do it like this
 		picker.setOldCenterColor(picker.getColor());
-		
+
 		picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
@@ -198,6 +200,9 @@ public class MainActivity extends Activity {
 			}
 
 		});
+
+		generateBasicColorSweep();
+
 	}
 
 	public void on(View view) {
@@ -261,6 +266,48 @@ public class MainActivity extends Activity {
 			}
 		});
 
+	}
+
+	public void generateBasicColorSweep() {
+		double frequency = 0.3;
+		int amplitude = 127;
+		int center = 128;
+
+		for (int i = 0; i < 32; ++i) {
+			int v = (int) (Math.sin(frequency * i) * amplitude + center);
+
+			// Note that &#9608; is a unicode character that makes a solid block
+			String x = RGB2Color(v, v, v);
+
+			try {
+				Thread.sleep(100);
+
+				tvChangeBackground.setText("Hello World");
+				tvChangeBackground.setBackgroundColor(Color.parseColor(x));
+
+				Log.d(TAG, x);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public String RGB2Color(int r, int g, int b) {
+		byte[] array = new byte[] { (byte) r, (byte) g, (byte) b };
+		return '#' + bytesToHex(array);
+	}
+
+	private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+	public static String bytesToHex(byte[] bytes) {
+		char[] hexChars = new char[bytes.length * 2];
+		for (int j = 0; j < bytes.length; j++) {
+			int v = bytes[j] & 0xFF;
+			hexChars[j * 2] = hexArray[v >>> 4];
+			hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+		}
+		return new String(hexChars);
 	}
 
 	public void off(View view) {

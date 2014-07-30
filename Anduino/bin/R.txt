@@ -272,12 +272,12 @@ int id bluetoothInformation 0x7f06003f
 int id bluetoothToggle 0x7f06003d
 int id bluetoothToggleLayout 0x7f06003c
 int id bluetoothToggleTitle 0x7f06003e
-int id btBlueOff 0x7f06004e
-int id btBlueOn 0x7f06004d
-int id btGreenOff 0x7f06004c
-int id btGreenOn 0x7f06004b
-int id btRedOff 0x7f06004a
-int id btRedOn 0x7f060049
+int id btBlueOff 0x7f06004f
+int id btBlueOn 0x7f06004e
+int id btGreenOff 0x7f06004d
+int id btGreenOn 0x7f06004c
+int id btRedOff 0x7f06004b
+int id btRedOn 0x7f06004a
 int id button1 0x7f060040
 int id button2 0x7f060041
 int id button3 0x7f060042
@@ -328,6 +328,7 @@ int id submit_area 0x7f060039
 int id tabMode 0x7f060002
 int id title 0x7f06002b
 int id top_action_bar 0x7f060020
+int id tvChangeBackground 0x7f060049
 int id tvColorDisplay 0x7f060048
 int id up 0x7f060021
 int id useLogo 0x7f060003

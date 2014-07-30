@@ -1213,12 +1213,12 @@ containing a value of this type.
         public static final int bluetoothToggle=0x7f06003d;
         public static final int bluetoothToggleLayout=0x7f06003c;
         public static final int bluetoothToggleTitle=0x7f06003e;
-        public static final int btBlueOff=0x7f06004e;
-        public static final int btBlueOn=0x7f06004d;
-        public static final int btGreenOff=0x7f06004c;
-        public static final int btGreenOn=0x7f06004b;
-        public static final int btRedOff=0x7f06004a;
-        public static final int btRedOn=0x7f060049;
+        public static final int btBlueOff=0x7f06004f;
+        public static final int btBlueOn=0x7f06004e;
+        public static final int btGreenOff=0x7f06004d;
+        public static final int btGreenOn=0x7f06004c;
+        public static final int btRedOff=0x7f06004b;
+        public static final int btRedOn=0x7f06004a;
         public static final int button1=0x7f060040;
         public static final int button2=0x7f060041;
         public static final int button3=0x7f060042;
@@ -1269,6 +1269,7 @@ containing a value of this type.
         public static final int tabMode=0x7f060002;
         public static final int title=0x7f06002b;
         public static final int top_action_bar=0x7f060020;
+        public static final int tvChangeBackground=0x7f060049;
         public static final int tvColorDisplay=0x7f060048;
         public static final int up=0x7f060021;
         public static final int useLogo=0x7f060003;
