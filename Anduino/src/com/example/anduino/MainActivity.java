@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
@@ -42,8 +43,13 @@ public class MainActivity extends Activity {
 	@SuppressWarnings("unused")
 	private Button On, Off, Visible, list, redOn, redOff, greenOn, greenOff,
 			blueOn, blueOff;
+
+	private CheckBox cbBasicSweep;
+
 	private ListView lv;
-	private TextView tvColorDisplay, tvChangeBackground;
+	private TextView tvColorDisplay;
+
+	private int DEFAULT_DELAY = 25, SWEEP_DELAY = 75;
 
 	@SuppressWarnings("unused")
 	private LinearLayout llBluetooth, llColorWheel;
@@ -56,7 +62,8 @@ public class MainActivity extends Activity {
 	private OutputStream outStream = null;
 	private Set<BluetoothDevice> pairedDevices;
 
-	private Boolean listToggle = false;
+	private Boolean listToggle = false, deviceConnected = false,
+			isSweeping = false;;
 
 	// MAC-address of Bluetooth module
 	private static String address;
@@ -76,14 +83,32 @@ public class MainActivity extends Activity {
 		list = (Button) findViewById(R.id.button4);
 
 		tvColorDisplay = (TextView) findViewById(R.id.tvColorDisplay);
-		tvChangeBackground = (TextView) findViewById(R.id.tvChangeBackground);
+		cbBasicSweep = (CheckBox) findViewById(R.id.cbBasicSweep);
+		cbBasicSweep.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (cbBasicSweep.isChecked())
+					isSweeping = true;
+				else
+					isSweeping = false;
+
+				generateBasicColorSweep();
+			}
+
+		});
 
 		redOn = (Button) findViewById(R.id.btRedOn);
 		redOn.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				sendData("1");
+				if (!isSweeping) {
+					sendToArduino("#ff0000", DEFAULT_DELAY);
+					sendToArduino("#ff0000", DEFAULT_DELAY);
+
+					picker.setColor(Color.parseColor("#ff0000"));
+				}
 			}
 
 		});
@@ -93,7 +118,10 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				sendData("0");
+				if (!isSweeping) {
+					sendToArduino("#000000", DEFAULT_DELAY);
+					sendToArduino("#000000", DEFAULT_DELAY);
+				}
 			}
 
 		});
@@ -103,7 +131,12 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				sendData("2");
+				if (!isSweeping) {
+					sendToArduino("#00ff00", DEFAULT_DELAY);
+					sendToArduino("#00ff00", DEFAULT_DELAY);
+
+					picker.setColor(Color.parseColor("#00ff00"));
+				}
 			}
 
 		});
@@ -113,7 +146,10 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				sendData("3");
+				if (!isSweeping) {
+					sendToArduino("#000000", DEFAULT_DELAY);
+					sendToArduino("#000000", DEFAULT_DELAY);
+				}
 			}
 
 		});
@@ -123,7 +159,12 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				sendData("4");
+				if (!isSweeping) {
+					sendToArduino("#0000ff", DEFAULT_DELAY);
+					sendToArduino("#0000ff", DEFAULT_DELAY);
+
+					picker.setColor(Color.parseColor("#0000ff"));
+				}
 			}
 
 		});
@@ -133,7 +174,10 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				sendData("5");
+				if (!isSweeping) {
+					sendToArduino("#000000", DEFAULT_DELAY);
+					sendToArduino("#000000", DEFAULT_DELAY);
+				}
 			}
 
 		});
@@ -175,11 +219,14 @@ public class MainActivity extends Activity {
 		picker.setOnColorChangedListener(new ColorPicker.OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
-				String hexColor = String.format("#%06X", (0xFFFFFF & color));
+				if (!isSweeping) {
+					String hexColor = String
+							.format("#%06X", (0xFFFFFF & color));
 
-				tvColorDisplay.setText(hexColor);
+					tvColorDisplay.setText(hexColor);
 
-				sendToArduino(hexColor);
+					sendToArduino(hexColor, DEFAULT_DELAY);
+				}
 			}
 		});
 
@@ -200,9 +247,6 @@ public class MainActivity extends Activity {
 			}
 
 		});
-
-		generateBasicColorSweep();
-
 	}
 
 	public void on(View view) {
@@ -269,28 +313,32 @@ public class MainActivity extends Activity {
 	}
 
 	public void generateBasicColorSweep() {
-		double frequency = 0.3;
-		int amplitude = 127;
-		int center = 128;
+		Thread thread = new Thread() {
+			@Override
+			public void run() {
+				double frequency = 0.3;
+				int amplitude = 127;
+				int center = 128;
 
-		for (int i = 0; i < 32; ++i) {
-			int v = (int) (Math.sin(frequency * i) * amplitude + center);
+				if (deviceConnected)
+					while (cbBasicSweep.isChecked())
+						for (int i = 0; i < 21; ++i) {
+							int red = (int) (Math.sin(frequency * i + 0)
+									* amplitude + center);
+							int green = (int) (Math.sin(frequency * i + 2
+									* Math.PI / 3)
+									* amplitude + center);
+							int blue = (int) (Math.sin(frequency * i + 4
+									* Math.PI / 3)
+									* amplitude + center);
 
-			// Note that &#9608; is a unicode character that makes a solid block
-			String x = RGB2Color(v, v, v);
+							String x = RGB2Color(red, green, blue);
 
-			try {
-				Thread.sleep(100);
-
-				tvChangeBackground.setText("Hello World");
-				tvChangeBackground.setBackgroundColor(Color.parseColor(x));
-
-				Log.d(TAG, x);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+							sendToArduino(x, SWEEP_DELAY);
+						}
 			}
-		}
+		};
+		thread.start();
 	}
 
 	public String RGB2Color(int r, int g, int b) {
@@ -385,6 +433,7 @@ public class MainActivity extends Activity {
 
 		try {
 			outStream = btSocket.getOutputStream();
+			deviceConnected = true;
 		} catch (IOException e) {
 			errorExit("Fatal Error",
 					"In AttemptConnection() and output stream creation failed:"
@@ -468,20 +517,21 @@ public class MainActivity extends Activity {
 	}
 
 	// sends color data to a Serial device as #000000
-	private void sendToArduino(String message) {
+	private void sendToArduino(String message, int delay) {
 		byte[] msgBuffer = message.getBytes();
 
 		// send the color to the serial device
 		if (outStream != null) {
 			try {
 				outStream.write(msgBuffer);
-				Thread.sleep(25); // Sleep is required for Arduino baud rate
+				Thread.sleep(delay); // Sleep is required for Arduino baud rate
 			} catch (IOException e) {
 				Log.e(TAG, "couldn't write color bytes to serial device");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		} else {
+			deviceConnected = false;
 			Log.d(TAG, "No device connected.");
 		}
 	}

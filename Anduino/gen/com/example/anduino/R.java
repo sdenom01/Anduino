@@ -1223,6 +1223,7 @@ containing a value of this type.
         public static final int button2=0x7f060041;
         public static final int button3=0x7f060042;
         public static final int button4=0x7f060043;
+        public static final int cbBasicSweep=0x7f060049;
         public static final int checkbox=0x7f06002d;
         public static final int collapseActionView=0x7f06000d;
         public static final int colorPicker=0x7f060045;
@@ -1269,7 +1270,6 @@ containing a value of this type.
         public static final int tabMode=0x7f060002;
         public static final int title=0x7f06002b;
         public static final int top_action_bar=0x7f060020;
-        public static final int tvChangeBackground=0x7f060049;
         public static final int tvColorDisplay=0x7f060048;
         public static final int up=0x7f060021;
         public static final int useLogo=0x7f060003;
@@ -1376,6 +1376,7 @@ containing a value of this type.
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0a000b;
         public static final int app_name=0x7f0a000d;
+        public static final int basicSweep=0x7f0a0013;
     }
     public static final class style {
         /** 

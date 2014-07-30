@@ -7,4 +7,6 @@
     <string name="Visible">Visible</string>
     <string name="List">List</string>
     <string name="ToggleBluetooth">Show Bluetooth Info?</string>
+    <string name="basicSweep">Basic Color Sweep</string>
+
 </resources>
