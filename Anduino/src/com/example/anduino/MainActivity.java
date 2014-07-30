@@ -44,12 +44,12 @@ public class MainActivity extends Activity {
 	private Button On, Off, Visible, list, redOn, redOff, greenOn, greenOff,
 			blueOn, blueOff;
 
-	private CheckBox cbBasicSweep;
+	private CheckBox cbBasicSweep, cbBasicPattern;
 
 	private ListView lv;
 	private TextView tvColorDisplay;
 
-	private int DEFAULT_DELAY = 25, SWEEP_DELAY = 75;
+	private int DEFAULT_DELAY = 25, SWEEP_DELAY = 75, PATTERN_DELAY = 250;
 
 	@SuppressWarnings("unused")
 	private LinearLayout llBluetooth, llColorWheel;
@@ -88,12 +88,33 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				if (cbBasicSweep.isChecked())
+				if (cbBasicSweep.isChecked()) {
+					cbBasicPattern.setChecked(false);
 					isSweeping = true;
-				else
+				} else {
 					isSweeping = false;
+				}
 
 				generateBasicColorSweep();
+
+			}
+
+		});
+
+		cbBasicPattern = (CheckBox) findViewById(R.id.cbBasicPattern);
+		cbBasicPattern.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (cbBasicPattern.isChecked()) {
+					cbBasicSweep.setChecked(false);
+					isSweeping = true;
+				} else {
+					isSweeping = false;
+				}
+
+				makeColorGradient(2.4f, 2.4f, 2.4f, 0, 2, 4, PATTERN_DELAY);
+
 			}
 
 		});
@@ -323,6 +344,10 @@ public class MainActivity extends Activity {
 				if (deviceConnected)
 					while (cbBasicSweep.isChecked())
 						for (int i = 0; i < 21; ++i) {
+
+							if (!cbBasicSweep.isChecked())
+								break;
+
 							int red = (int) (Math.sin(frequency * i + 0)
 									* amplitude + center);
 							int green = (int) (Math.sin(frequency * i + 2
@@ -335,6 +360,39 @@ public class MainActivity extends Activity {
 							String x = RGB2Color(red, green, blue);
 
 							sendToArduino(x, SWEEP_DELAY);
+						}
+			}
+		};
+		thread.start();
+	}
+
+	private void makeColorGradient(final float frequency1,
+			final float frequency2, final float frequency3, final int phase1,
+			final int phase2, final int phase3, final int delay) {
+		Thread thread = new Thread() {
+			@Override
+			public void run() {
+
+				int center = 128;
+				int width = 127;
+
+				if (deviceConnected)
+					while (cbBasicPattern.isChecked())
+						for (int i = 0; i < 31; ++i) {
+
+							if (!cbBasicPattern.isChecked())
+								break;
+
+							int red = (int) (Math.sin(frequency1 * i + phase1)
+									* width + center);
+							int green = (int) (Math
+									.sin(frequency2 * i + phase2) * width + center);
+							int blue = (int) (Math.sin(frequency3 * i + phase3)
+									* width + center);
+
+							String x = RGB2Color(red, green, blue);
+
+							sendToArduino(x, delay);
 						}
 			}
 		};

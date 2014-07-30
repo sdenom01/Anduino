@@ -124,6 +124,13 @@
             android:layout_gravity="center"
             android:text="@string/basicSweep" />
 
+        <CheckBox
+            android:id="@+id/cbBasicPattern"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/basicPattern" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="fill_parent"

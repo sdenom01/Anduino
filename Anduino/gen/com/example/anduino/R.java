@@ -1213,16 +1213,17 @@ containing a value of this type.
         public static final int bluetoothToggle=0x7f06003d;
         public static final int bluetoothToggleLayout=0x7f06003c;
         public static final int bluetoothToggleTitle=0x7f06003e;
-        public static final int btBlueOff=0x7f06004f;
-        public static final int btBlueOn=0x7f06004e;
-        public static final int btGreenOff=0x7f06004d;
-        public static final int btGreenOn=0x7f06004c;
-        public static final int btRedOff=0x7f06004b;
-        public static final int btRedOn=0x7f06004a;
+        public static final int btBlueOff=0x7f060050;
+        public static final int btBlueOn=0x7f06004f;
+        public static final int btGreenOff=0x7f06004e;
+        public static final int btGreenOn=0x7f06004d;
+        public static final int btRedOff=0x7f06004c;
+        public static final int btRedOn=0x7f06004b;
         public static final int button1=0x7f060040;
         public static final int button2=0x7f060041;
         public static final int button3=0x7f060042;
         public static final int button4=0x7f060043;
+        public static final int cbBasicPattern=0x7f06004a;
         public static final int cbBasicSweep=0x7f060049;
         public static final int checkbox=0x7f06002d;
         public static final int collapseActionView=0x7f06000d;
@@ -1376,6 +1377,7 @@ containing a value of this type.
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f0a000b;
         public static final int app_name=0x7f0a000d;
+        public static final int basicPattern=0x7f0a0014;
         public static final int basicSweep=0x7f0a0013;
     }
     public static final class style {

@@ -8,5 +8,6 @@
     <string name="List">List</string>
     <string name="ToggleBluetooth">Show Bluetooth Info?</string>
     <string name="basicSweep">Basic Color Sweep</string>
+    <string name="basicPattern">Basic Color Pattern</string>
 
 </resources>
